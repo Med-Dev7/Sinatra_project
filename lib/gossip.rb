@@ -12,13 +12,11 @@ class Gossip
             ligne << [@author, @content]  
         end
     end
-
     def self.all
         all_gossips = []
         CSV.read("./db/gossip.csv").each do |csv_ligne|
             
             all_gossips << Gossip.new(csv_ligne[0], csv_ligne[1])
-            # all_gossips << provisory
         end
         return all_gossips
     end
@@ -26,12 +24,23 @@ class Gossip
         CSV.foreach("./db/gossip.csv").each_with_index do |csv_ligne, index|
             if id == index.to_s
                 gossip_id_find = Gossip.new(csv_ligne[0], csv_ligne[1])
-                # puts gossip_id_find.author
-                # puts gossip_id_find.content
                 return gossip_id_find
             end    
         end
     end
+    def self.update(id, name, text)
+        array = []
+        CSV.open("./db/gossip.csv", "r+") do |data, index|
+            CSV.foreach("./db/gossip.csv").each_with_index do |csv_ligne, index|
+                if id == index.to_s            
+                    data << ["#{name}", "#{text}"]
+                else
+                    data << csv_ligne
+                end
+            end
+        end
+    end
+
 end
 # Gossip.new("med", "test").save
 # binding.pry
